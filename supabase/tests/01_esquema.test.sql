@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(19);
+select plan(20);
 
 -- usuarios de prueba
 insert into auth.users (id, email) values
@@ -34,6 +34,10 @@ select lives_ok($$ insert into public.prendas (id, usuario_id, foto_path, estado
 select throws_ok($$ insert into public.prendas (usuario_id, foto_path, estado, categoria, tipo)
   values ('00000000-0000-0000-0000-00000000000a', 'a/6.webp', 'lista', 'arriba', repeat('x', 41)) $$,
   '23514', null, 'tipo de más de 40 caracteres se rechaza');
+
+select throws_ok($$ insert into public.prendas (usuario_id, foto_path, estado)
+  values ('00000000-0000-0000-0000-00000000000a', 'a/2.webp', 'sin_clasificar') $$,
+  '23505', null, 'una misma foto no crea dos prendas');
 
 -- pagos
 select throws_ok($$ insert into public.pagos (usuario_id, pase_id, monto, numero_operacion)

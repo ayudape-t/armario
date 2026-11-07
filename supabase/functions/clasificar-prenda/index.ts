@@ -33,6 +33,17 @@ servir(async (req) => {
       },
       async insertarPrenda(p) {
         const { data, error } = await db.from('prendas').insert(p).select('id').single();
+        if (error?.code === '23505') {
+          // Dos llamadas con la misma foto a la vez: devolvemos la que ganó.
+          const { data: ya, error: e2 } = await db.from('prendas').select('id').eq('foto_path', p.foto_path).single();
+          if (e2) throw e2;
+          return ya;
+        }
+        if (error) throw error;
+        return data;
+      },
+      async prendaPorRuta(ruta) {
+        const { data, error } = await db.from('prendas').select('id, estado').eq('foto_path', ruta).eq('usuario_id', usuario.id).maybeSingle();
         if (error) throw error;
         return data;
       },

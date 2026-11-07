@@ -1,12 +1,8 @@
 import { useRef, useState } from 'react';
-import { llamarFuncion } from '../lib/api';
-import { MENSAJE_SIN_CONEXION, sinConexion } from '../lib/conexion';
-import { borrarFotos, prepararFotos, rutaFoto, rutaMini } from '../lib/fotos';
-import { supabase } from '../lib/supabase';
+import { depsReales, subirPrenda, type EstadoSubida as Estado } from '../lib/subida';
 import VentanaPremium from './VentanaPremium';
 
-type Estado = 'analizando' | 'lista' | 'sin_clasificar' | 'no_es_prenda' | 'limite' | 'limite_fotos' | 'error' | 'ilegible';
-type Item = { clave: string; archivo: File; vista: string; estado: Estado; mensaje?: string };
+type Item = { clave: string; archivo: File; vista: string; estado: Estado; mensaje?: string; ruta?: string };
 
 const TEXTO: Record<Estado, string> = {
   analizando: 'Analizando…',
@@ -19,29 +15,6 @@ const TEXTO: Record<Estado, string> = {
   ilegible: 'No pudimos leer esta foto',
 };
 
-async function subir(uid: string, archivo: File): Promise<{ estado: Estado; mensaje?: string }> {
-  let fotos;
-  try {
-    fotos = await prepararFotos(archivo);
-  } catch {
-    return { estado: 'ilegible' };
-  }
-  const ruta = rutaFoto(uid, crypto.randomUUID(), fotos.ext);
-  const bucket = supabase.storage.from('prendas');
-  const tipo = fotos.ext === 'webp' ? 'image/webp' : 'image/jpeg';
-  for (const [r, blob] of [[ruta, fotos.grande], [rutaMini(ruta), fotos.mini]] as const) {
-    const { error } = await bucket.upload(r, blob, { contentType: tipo });
-    if (error) return { estado: 'error', mensaje: sinConexion(error) ? MENSAJE_SIN_CONEXION : undefined };
-  }
-  const r = await llamarFuncion<{ estado: 'lista' | 'sin_clasificar' }>('clasificar-prenda', { ruta });
-  if (r.ok) return { estado: r.data.estado };
-  if (r.error === 'no_es_prenda') return { estado: 'no_es_prenda' };
-  await borrarFotos(ruta).catch(() => {});
-  if (r.error === 'limite_prendas') return { estado: 'limite' };
-  if (r.error === 'limite_fotos') return { estado: 'limite_fotos' };
-  return { estado: 'error', mensaje: r.error === 'sin_conexion' ? MENSAJE_SIN_CONEXION : undefined };
-}
-
 /** Sube las fotos de una en una (así el límite del plan se respeta foto por foto). */
 export default function SubidaFotos({ uid, onCambio }: { uid: string; onCambio?: (listas: number) => void }) {
   const [items, setItems] = useState<Item[]>([]);
@@ -53,9 +26,9 @@ export default function SubidaFotos({ uid, onCambio }: { uid: string; onCambio?:
   }
 
   function encolar(item: Item) {
+    poner(item.clave, { estado: 'analizando', mensaje: undefined });
     cola.current = cola.current.then(async () => {
-      poner(item.clave, { estado: 'analizando', mensaje: undefined });
-      const r = await subir(uid, item.archivo);
+      const r = await subirPrenda(depsReales, uid, item.archivo, item.ruta);
       poner(item.clave, r);
       if (r.estado === 'lista' || r.estado === 'sin_clasificar') onCambio?.(++listas.current);
     });

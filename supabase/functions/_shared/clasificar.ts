@@ -19,6 +19,8 @@ export type DepsClasificar = {
   descargarFoto(ruta: string): Promise<Uint8Array>;
   borrarFotos(ruta: string): Promise<void>;
   insertarPrenda(p: NuevaPrenda): Promise<{ id: string }>;
+  /** La prenda que ya usa esa foto (reintento tras perder la conexión), o null. */
+  prendaPorRuta(ruta: string): Promise<{ id: string; estado: 'lista' | 'sin_clasificar' } | null>;
   /** Lanza si la IA falla o tarda más de 20 s. */
   clasificarConIA(foto: Uint8Array, tipoMime: string): Promise<Ficha>;
 };
@@ -31,14 +33,24 @@ export async function procesarClasificacion(deps: DepsClasificar, uid: string, r
   const coincide = new RegExp(`^${uid}/[0-9a-f-]{36}\\.(webp|jpg)$`).exec(ruta);
   if (!coincide) return { ok: false, error: 'ruta_invalida' };
 
+  const existente = await deps.prendaPorRuta(ruta);
+  if (existente) return { ok: true, prenda_id: existente.id, estado: existente.estado };
+
   const limites = await deps.estadoLimites(uid);
   if (limites.prendas >= limites.max_prendas) return { ok: false, error: 'limite_prendas' };
   if (limites.clasificaciones_hoy >= limites.max_clasificaciones) return { ok: false, error: 'limite_fotos' };
 
+  let foto: Uint8Array;
+  try {
+    foto = await deps.descargarFoto(ruta);
+  } catch {
+    return { ok: false, error: 'ruta_invalida' };
+  }
+
   await deps.registrarUso(uid, 'clasificar');
   let ficha: Ficha | null = null;
   try {
-    ficha = await deps.clasificarConIA(await deps.descargarFoto(ruta), coincide[1] === 'jpg' ? 'image/jpeg' : 'image/webp');
+    ficha = await deps.clasificarConIA(foto, coincide[1] === 'jpg' ? 'image/jpeg' : 'image/webp');
   } catch {
     ficha = null;
   }

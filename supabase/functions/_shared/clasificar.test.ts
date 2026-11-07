@@ -21,6 +21,7 @@ function deps(cambios: Partial<DepsClasificar> = {}) {
     borrarFotos: vi.fn(async () => {}),
     insertarPrenda: vi.fn(async () => ({ id: 'prenda-1' })),
     clasificarConIA: vi.fn(async () => (orden.push('ia'), FICHA)),
+    prendaPorRuta: vi.fn(async () => null),
     ...cambios,
   };
   return { d, orden };
@@ -87,6 +88,21 @@ describe('procesarClasificacion', () => {
     })) });
     await procesarClasificacion(d, UID, RUTA);
     expect(d.insertarPrenda).toHaveBeenCalledWith(expect.objectContaining({ tipo: 't'.repeat(40), colores: ['negro', 'rojo', 'azul'] }));
+  });
+
+  test('si la prenda de esa foto ya existe la devuelve sin gastar IA ni pedido', async () => {
+    const { d } = deps({ prendaPorRuta: vi.fn(async () => ({ id: 'prenda-9', estado: 'lista' as const })) });
+    expect(await procesarClasificacion(d, UID, RUTA)).toEqual({ ok: true, prenda_id: 'prenda-9', estado: 'lista' });
+    expect(d.registrarUso).not.toHaveBeenCalled();
+    expect(d.clasificarConIA).not.toHaveBeenCalled();
+    expect(d.insertarPrenda).not.toHaveBeenCalled();
+  });
+
+  test('si la foto no se puede descargar no guarda una prenda sin foto', async () => {
+    const { d } = deps({ descargarFoto: vi.fn(async () => { throw new Error('no existe'); }) });
+    expect(await procesarClasificacion(d, UID, RUTA)).toEqual({ ok: false, error: 'ruta_invalida' });
+    expect(d.insertarPrenda).not.toHaveBeenCalled();
+    expect(d.registrarUso).not.toHaveBeenCalled();
   });
 
   test('una foto .jpg se envía como image/jpeg y una .webp como image/webp', async () => {
