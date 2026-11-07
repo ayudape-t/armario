@@ -209,7 +209,7 @@ En `sin_clasificar` los campos de la ficha pueden ser null; un `check` exige `ca
 ### 4.3 Fotos
 
 - **Dónde:** bucket privado `prendas`, una carpeta por cliente. Solo el dueño puede leer y escribir en su carpeta.
-- **Subida:** el bucket acepta solo `image/webp`, `image/jpeg` e `image/png`, de hasta 5 MB.
+- **Subida:** el bucket acepta solo `image/webp`, `image/jpeg` e `image/png`, de hasta 1 MB, y como máximo 2200 archivos por cliente (1000 prendas × 2 tamaños + margen), para que una sola cuenta no llene el almacenamiento de todos.
 - **Dos tamaños, hechos en la app antes de subir:**
   - grande: 1024 px de lado mayor, WebP (~150 KB), para el detalle y para la IA;
   - miniatura: 300 px, WebP (~20 KB), para la cuadrícula del armario. Así rinde más la descarga del plan gratis.

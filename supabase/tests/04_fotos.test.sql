@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(5);
+select plan(6);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'a@prueba.pe'),
@@ -8,7 +8,7 @@ insert into auth.users (id, email) values
 insert into storage.objects (bucket_id, name) values ('prendas', '00000000-0000-0000-0000-00000000000b/foto.webp');
 
 select results_eq($$ select public, file_size_limit, allowed_mime_types from storage.buckets where id = 'prendas' $$,
-  $$ values (false, 5242880::bigint, array['image/webp','image/jpeg','image/png']) $$, 'bucket privado, 5 MB, solo imágenes');
+  $$ values (false, 1048576::bigint, array['image/webp','image/jpeg','image/png']) $$, 'bucket privado, 1 MB, solo imágenes');
 
 set local role authenticated;
 set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
@@ -18,6 +18,14 @@ select lives_ok($$ insert into storage.objects (bucket_id, name) values ('prenda
   'A puede subir a su carpeta');
 select is((select count(*)::int from storage.objects where name like '00000000-0000-0000-0000-00000000000b/%'), 0, 'A no ve las fotos de B');
 select is((select count(*)::int from storage.objects where name like '00000000-0000-0000-0000-00000000000a/%'), 1, 'A ve sus fotos');
+
+reset role;
+insert into storage.objects (bucket_id, name)
+  select 'prendas', '00000000-0000-0000-0000-00000000000b/relleno-' || n || '.webp' from generate_series(1, 2200) n;
+set local role authenticated;
+set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}';
+select throws_ok($$ insert into storage.objects (bucket_id, name) values ('prendas', '00000000-0000-0000-0000-00000000000b/una-mas.webp') $$,
+  '42501', null, 'una cuenta no puede pasar de 2200 archivos');
 
 reset role;
 select * from finish();

@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { FichaIA, PALETA, type Ficha } from './ficha.ts';
-import { RespuestaIA, type Pedido } from './outfit.ts';
+import { MAX_TOKENS_OUTFIT, RespuestaIA, type Pedido } from './outfit.ts';
 
 const modelo = () => Deno.env.get('IA_MODELO') ?? 'claude-haiku-5-5';
 
@@ -63,7 +63,7 @@ export async function sugerirConIA(pedido: Pedido, lista: string, evitarCodigos:
   const r = await cliente.messages.parse(
     {
       model: modelo(),
-      max_tokens: 4096,
+      max_tokens: MAX_TOKENS_OUTFIT,
       system: SISTEMA_OUTFIT,
       output_config: { effort: 'medium', format: zodOutputFormat(RespuestaIA) },
       messages: [{

@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+// El razonamiento adaptativo de la IA cuenta dentro de max_tokens: con poco margen, un armario grande corta la respuesta.
+export const MAX_TOKENS_OUTFIT = 16_000;
+
 export const Pedido = z.object({
   ocasion: z.string().trim().min(1).max(80),
   tema: z.string().trim().max(80).default(''),

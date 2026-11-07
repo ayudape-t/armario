@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { armarLista, procesarPedidoOutfit, type DepsOutfit, type PrendaLista, type RespuestaIA } from './outfit.ts';
+import { armarLista, MAX_TOKENS_OUTFIT, procesarPedidoOutfit, type DepsOutfit, type PrendaLista, type RespuestaIA } from './outfit.ts';
 
 const UID = 'u1';
 const id = (n: number) => `00000000-0000-0000-0000-${String(n).padStart(12, '0')}`;
@@ -115,4 +115,8 @@ test('armarLista escribe una línea por prenda con su código', () => {
   const { texto, codigoAId } = armarLista(PRENDAS.slice(0, 2));
   expect(texto).toBe('p1 · vestido (vestido largo) · negro · informal · ligera\np2 · calzado · negro · informal · ligera');
   expect(codigoAId.get('p2')).toBe(id(2));
+});
+
+test('la respuesta de outfits tiene espacio para el razonamiento de la IA', () => {
+  expect(MAX_TOKENS_OUTFIT).toBeGreaterThanOrEqual(16_000);
 });
