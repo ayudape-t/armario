@@ -27,3 +27,11 @@ export async function nuevoUsuario(prefijo = 'cliente') {
   if (e2) throw e2;
   return { id: data.user.id, email, token: sesion.session!.access_token, cliente };
 }
+
+export async function idDe(correo: string): Promise<string> {
+  const { data, error } = await admin.auth.admin.listUsers({ perPage: 1000 });
+  if (error) throw error;
+  const u = data.users.find((x) => x.email === correo);
+  if (!u) throw new Error(`No existe ${correo}`);
+  return u.id;
+}
