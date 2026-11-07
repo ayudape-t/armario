@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "e2e": "playwright test --trace off"
+    "e2e": "playwright test --trace off",
+    "test:db": "supabase test db"
   },
   "dependencies": {
     "react": "19.3.1",
