@@ -125,7 +125,7 @@ Premium está activo si `premium_hasta > now()`.
 |---|---|---|
 | `id` | uuid, PK | |
 | `usuario_id` | uuid | |
-| `foto_path` | text | `{usuario_id}/{uuid}.webp` en el bucket `prendas` |
+| `foto_path` | text | `{usuario_id}/{uuid}.webp` en el bucket `prendas`; la miniatura es la misma ruta terminada en `_mini.webp` |
 | `estado` | text: `lista` \| `sin_clasificar` | `sin_clasificar` cuando la IA falló |
 | `categoria` | text: `arriba` \| `abajo` \| `vestido` \| `calzado` \| `abrigo` \| `accesorio`, nullable | null solo si `sin_clasificar` |
 | `tipo` | text, máx. 40 | «polo», «jean»… |
@@ -210,7 +210,10 @@ En `sin_clasificar` los campos de la ficha pueden ser null; un `check` exige `ca
 
 - **Dónde:** bucket privado `prendas`, una carpeta por cliente. Solo el dueño puede leer y escribir en su carpeta.
 - **Subida:** el bucket acepta solo `image/webp`, `image/jpeg` e `image/png`, de hasta 5 MB.
-- **Compresión en la app:** antes de subirla, la app reduce la foto a 1024 px de lado mayor, en WebP (~150 KB).
+- **Dos tamaños, hechos en la app antes de subir:**
+  - grande: 1024 px de lado mayor, WebP (~150 KB), para el detalle y para la IA;
+  - miniatura: 300 px, WebP (~20 KB), para la cuadrícula del armario. Así rinde más la descarga del plan gratis.
+- **Al borrar una prenda,** la app borra también sus dos fotos.
 - **Visualización:** con enlaces firmados que caducan en 1 hora.
 
 ### 4.4 Límites
@@ -326,8 +329,13 @@ Vuelve al plan gratis sin perder nada:
 
 ### 6.4 Lanzamiento
 
-1. **Beta cerrada:** tu esposa y ~10 amigas, con Premium regalado desde el panel y sin cobrar. Supabase gratis, con una copia de seguridad manual cada semana.
-2. **Lanzamiento:** se pasa a Supabase Pro (copias diarias automáticas), se activan los pases y se publica la página de inicio.
+1. **Beta cerrada:** tu esposa y ~10 amigas, con Premium regalado desde el panel y sin cobrar.
+2. **Lanzamiento:** se activan los pases y se publica la página de inicio. Se sigue en el **plan gratis de Supabase**.
+3. **Paso a Supabase Pro** (un botón en el panel, sin cambios de código), cuando se cumpla lo primero de:
+   - unos 10 clientes Premium, que cubren los US$25 al mes;
+   - fotos cerca de 1 GB o descarga cerca de 5 GB al mes (se ve en el panel de Supabase).
+
+   Estimado: el plan gratis aguanta unos 100 a 150 clientes activos.
 
 ### 6.5 Prueba de calidad de la IA (antes de lanzar)
 
@@ -345,6 +353,7 @@ Vuelve al plan gratis sin perder nada:
 - **Administrador:** `es_admin` se activa solo por SQL directo.
 - **Validación en el servidor:** largos de texto, valores permitidos, formato del número de operación, tipo y tamaño de imagen, límites diarios.
 - **IA:** salida estructurada, texto del cliente tratado como dato y verificación de prendas (sección 5).
+- **Copia de seguridad diaria:** una tarea programada de GitHub Actions exporta la base de datos cada noche, la cifra con una contraseña guardada como secreto de GitHub y la conserva 90 días. Va cifrada porque el repositorio es público. Las fotos no se copian (Supabase Pro tampoco las copia).
 - **Borrar cuenta (`borrar-cuenta`):** borra la carpeta de fotos y luego el usuario de `auth`; el resto se borra en cascada.
 - **Ley de datos personales (Ley 29733):** política de privacidad, aceptación al registrarse, borrar cuenta e inscripción del banco de datos ante la Autoridad de Protección de Datos Personales (trámite del dueño). La política indica que las fotos pasan por Anthropic solo para clasificarlas.
 
@@ -396,8 +405,9 @@ Los errores de las funciones quedan en los registros de Supabase.
 
 | Etapa | Costo |
 |---|---|
-| Desarrollo y beta | US$0 al mes, más una recarga inicial de ~US$5 en Anthropic |
-| Lanzamiento | US$25 al mes (Supabase Pro) + dominio opcional (~US$10 al año) |
+| Desarrollo, beta y lanzamiento | US$0 al mes (plan gratis de Supabase), más una recarga inicial de ~US$5 en Anthropic |
+| Al crecer (sección 6.4) | US$25 al mes (Supabase Pro) |
+| Dominio | Opcional, ~US$10 al año |
 | IA | Centavos según el uso; tope de US$20 al mes |
 | Cobros | Sin comisión con Yape personal (Yape Empresa cobra 2.95% solo por encima de ~5 UIT al mes) |
 
@@ -426,4 +436,6 @@ Punto de equilibrio: ~10 pases de S/9.90 al mes.
 - Confirmar con un comprobante real el formato del número de operación de Yape (hoy: solo dígitos, 6 a 20).
 - Revisar los textos de Términos y Privacidad (yo preparo un borrador; conviene una revisión legal).
 - Inscribir el banco de datos personales ante la autoridad.
+- Guardar en GitHub (Settings → Secrets) la conexión a la base de datos y la contraseña de las copias de seguridad.
+- Decidir si el repositorio pasa a privado. Hoy es público: cualquiera puede ver y copiar el código (nunca habrá claves en él).
 - Dominio propio (opcional).
