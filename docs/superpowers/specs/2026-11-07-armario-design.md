@@ -1,7 +1,7 @@
 # Armario virtual — Documento de diseño
 
 - **Fecha:** 2026-11-07
-- **Estado:** aprobado por secciones; pendiente de revisión final del documento
+- **Estado:** aprobado (2026-11-07)
 - **Repositorio:** `ayudape-t/armario`
 
 ## 1. Objetivo
