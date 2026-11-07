@@ -1,6 +1,7 @@
 import { Route, Routes, useLocation } from 'react-router';
 import TabBar from './components/TabBar';
 import { Protegida, useSesion } from './lib/sesion';
+import Admin from './screens/Admin';
 import Armario from './screens/Armario';
 import Bienvenida from './screens/Bienvenida';
 import Cuenta from './screens/Cuenta';
@@ -10,10 +11,6 @@ import Plan from './screens/Plan';
 import Premium from './screens/Premium';
 import Prenda from './screens/Prenda';
 
-function Provisional({ titulo }: { titulo: string }) {
-  return <h1>{titulo}</h1>;
-}
-
 const PROTEGIDAS: [string, React.ReactNode][] = [
   ['/', <Armario />],
   ['/outfit', <Outfit />],
@@ -22,7 +19,7 @@ const PROTEGIDAS: [string, React.ReactNode][] = [
   ['/premium', <Premium />],
   ['/prenda/:id', <Prenda />],
   ['/bienvenida', <Bienvenida />],
-  ['/admin', <Provisional titulo="Administrador" />],
+  ['/admin', <Admin />],
 ];
 
 export default function App() {
