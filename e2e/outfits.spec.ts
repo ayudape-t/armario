@@ -3,6 +3,7 @@ import { entrarConCorreo } from './ayudas';
 import { admin, idDe } from './entorno';
 
 test('pedir, guardar y planificar outfits', async ({ page }) => {
+  test.skip(process.env.IA_APAGADA === '1');
   const correo = await entrarConCorreo(page);
   const uid = await idDe(correo);
   await admin.from('prendas').insert(['vestido', 'calzado', 'abrigo', 'accesorio'].map((categoria, i) => ({

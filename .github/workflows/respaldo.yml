@@ -1,0 +1,26 @@
+name: Respaldo diario
+on:
+  schedule:
+    - cron: '0 8 * * *' # 03:00 en Lima
+  workflow_dispatch:
+jobs:
+  respaldo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exportar y cifrar
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          RESPALDO_CLAVE: ${{ secrets.RESPALDO_CLAVE }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ] || [ -z "$RESPALDO_CLAVE" ]; then
+            echo "Faltan los secretos SUPABASE_DB_URL y RESPALDO_CLAVE (ver docs/respaldo.md)."
+            exit 0
+          fi
+          bash scripts/respaldo.sh "$SUPABASE_DB_URL" "respaldo-$(date -u +%F).sql.gpg"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: respaldo-${{ github.run_id }}
+          path: respaldo-*.sql.gpg
+          retention-days: 90
+          if-no-files-found: ignore

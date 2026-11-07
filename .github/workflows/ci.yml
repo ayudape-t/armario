@@ -26,3 +26,28 @@ jobs:
       - run: npm ci
       - run: npx supabase start
       - run: npx supabase test db
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx supabase start
+      - run: node scripts/env-local.mjs
+      - name: Servidor de IA falsa y funciones
+        run: |
+          printf 'ANTHROPIC_API_KEY=falsa\nANTHROPIC_BASE_URL=http://host.docker.internal:8787\n' > supabase/.env.test
+          nohup node e2e/ia-falsa.mjs > ia-falsa.log 2>&1 &
+          nohup npx supabase functions serve --env-file supabase/.env.test > funciones.log 2>&1 &
+          for i in $(seq 1 60); do grep -q "Serving functions" funciones.log && break; sleep 2; done
+      - run: npx playwright test --trace off
+      - name: Pruebas con la IA caída
+        run: |
+          pkill -f e2e/ia-falsa.mjs
+          IA_APAGADA=1 npx playwright test --trace off
+      - name: Respaldo y restauración
+        run: RESPALDO_CLAVE=prueba bash scripts/respaldo.test.sh

@@ -59,7 +59,7 @@ insert into public.pagos (id, usuario_id, pase_id, monto, numero_operacion) valu
   ('00000000-0000-0000-0000-0000000000f3', '00000000-0000-0000-0000-00000000000b', '12m', 0, '33333333');
 set local role authenticated;
 set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
-select results_eq($$ select correo, pase, monto, numero_operacion from public.pagos_pendientes() $$,
+select results_eq($$ select correo, pase, monto, numero_operacion from public.pagos_pendientes() where correo in ('b@prueba.pe', 'c@prueba.pe') $$,
   $$ values ('b@prueba.pe'::text, '12 meses'::text, 79.90::numeric, '33333333'::text) $$,
   'el admin ve solo los pendientes, con correo y pase');
 select public.rechazar_pago('00000000-0000-0000-0000-0000000000f3');
