@@ -50,7 +50,15 @@ export async function procesarClasificacion(deps: DepsClasificar, uid: string, r
 
   const base = { usuario_id: uid, foto_path: ruta };
   const prenda: NuevaPrenda = ficha
-    ? { ...base, estado: 'lista', categoria: ficha.categoria, tipo: ficha.tipo, colores: ficha.colores, formalidad: ficha.formalidad, calidez: ficha.calidez }
+    ? {
+        ...base,
+        estado: 'lista',
+        categoria: ficha.categoria,
+        tipo: ficha.tipo.slice(0, 40) || null,
+        colores: ficha.colores.length ? [...new Set(ficha.colores)].slice(0, 3) : null,
+        formalidad: ficha.formalidad,
+        calidez: ficha.calidez,
+      }
     : { ...base, estado: 'sin_clasificar', categoria: null, tipo: null, colores: null, formalidad: null, calidez: null };
   const { id } = await deps.insertarPrenda(prenda);
   return { ok: true, prenda_id: id, estado: prenda.estado };

@@ -8,11 +8,12 @@ export const PALETA = [
 export const FORMALIDADES = ['formal', 'informal', 'ambas'] as const;
 export const CALIDECES = ['ligera', 'media', 'abrigada'] as const;
 
+// Sin límites de largo/cantidad en el esquema: recortamos al guardar en vez de perder la clasificación.
 export const FichaIA = z.object({
   es_prenda: z.boolean(),
   categoria: z.enum(CATEGORIAS),
-  tipo: z.string().max(40),
-  colores: z.array(z.enum(PALETA)).min(1).max(3),
+  tipo: z.string(),
+  colores: z.array(z.enum(PALETA)),
   formalidad: z.enum(FORMALIDADES),
   calidez: z.enum(CALIDECES),
 });

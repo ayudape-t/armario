@@ -44,3 +44,27 @@ test.describe('clasificar-prenda', () => {
     expect(r.status).toBe(401);
   });
 });
+
+test.describe('sugerir-outfit', () => {
+  test('arma outfits solo con prendas del cliente', async () => {
+    test.skip(process.env.IA_APAGADA === '1');
+    const u = await nuevoUsuario();
+    const { data: prendas, error } = await admin.from('prendas').insert([
+      { usuario_id: u.id, foto_path: `${u.id}/a.webp`, estado: 'lista', categoria: 'vestido', colores: ['negro'] },
+      { usuario_id: u.id, foto_path: `${u.id}/b.webp`, estado: 'lista', categoria: 'calzado', colores: ['dorado'] },
+    ]).select('id');
+    if (error) throw error;
+    const r = await llamar('sugerir-outfit', u.token, { ocasion: 'fiesta de noche', formalidad: 'informal', colores: 'llamativos', clima: 'frio' });
+    expect(r.status).toBe(200);
+    const cuerpo = await r.json();
+    expect(cuerpo.outfits.length).toBeGreaterThan(0);
+    const mias = new Set(prendas!.map((p) => p.id));
+    for (const o of cuerpo.outfits) for (const p of o.prendas) expect(mias.has(p)).toBe(true);
+  });
+
+  test('un pedido inválido responde 400', async () => {
+    const u = await nuevoUsuario();
+    const r = await llamar('sugerir-outfit', u.token, { ocasion: '', formalidad: 'informal', colores: 'neutros', clima: 'nieve' });
+    expect(r.status).toBe(400);
+  });
+});

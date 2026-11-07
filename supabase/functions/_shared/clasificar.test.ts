@@ -81,6 +81,14 @@ describe('procesarClasificacion', () => {
     });
   });
 
+  test('recorta un tipo largo y los colores de más en vez de fallar', async () => {
+    const { d } = deps({ clasificarConIA: vi.fn(async () => ({
+      ...FICHA, tipo: 't'.repeat(55), colores: ['negro', 'negro', 'rojo', 'azul', 'verde'] as typeof FICHA.colores,
+    })) });
+    await procesarClasificacion(d, UID, RUTA);
+    expect(d.insertarPrenda).toHaveBeenCalledWith(expect.objectContaining({ tipo: 't'.repeat(40), colores: ['negro', 'rojo', 'azul'] }));
+  });
+
   test('una foto .jpg se envía como image/jpeg y una .webp como image/webp', async () => {
     const jpg = deps();
     await procesarClasificacion(jpg.d, UID, RUTA.replace('.webp', '.jpg'));
