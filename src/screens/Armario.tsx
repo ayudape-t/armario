@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { CATEGORIAS, NOMBRE_CATEGORIA, type Categoria } from '../../supabase/functions/_shared/catalogo.ts';
+import Avisos from '../components/Avisos';
 import SubidaFotos from '../components/SubidaFotos';
 import { estadoLimites, type EstadoLimites } from '../lib/api';
 import { MENSAJE_SIN_CONEXION, sinConexion } from '../lib/conexion';
@@ -60,6 +61,7 @@ export default function Armario() {
         {!limites.premium && <span className="contador">{limites.prendas} de {limites.max_prendas}</span>}
       </header>
 
+      <Avisos />
       {hoy && <Link className="hoy" to="/plan">Hoy: {hoy}</Link>}
 
       <SubidaFotos uid={usuario!.id} onCambio={cargar} />

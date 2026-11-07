@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import Avisos from '../components/Avisos';
 import InstalarApp, { invitarAInstalar } from '../components/InstalarApp';
 import TarjetaOutfit from '../components/TarjetaOutfit';
 import VentanaPremium from '../components/VentanaPremium';
@@ -126,6 +127,7 @@ export default function Outfit() {
         {limites && !limites.premium && <span className="contador">{limites.outfits_hoy} de {limites.max_outfits} hoy</span>}
       </header>
 
+      <Avisos />
       <form onSubmit={enviar}>
         <label>
           Ocasión

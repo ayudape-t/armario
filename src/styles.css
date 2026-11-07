@@ -81,3 +81,8 @@ form { display: grid; gap: 0.75rem; }
 .aviso { background: #fff6e5; border-radius: var(--radio); padding: 0.5rem 0.75rem; margin: 0.5rem 0; }
 .hoy { display: block; background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 0.6rem 0.8rem; margin: 0.5rem 0; text-decoration: none; }
 .plan h2 { font-size: 1rem; margin: 0 0 0.4rem; }
+.banner { display: block; background: var(--marca); color: var(--marca-texto); border-radius: var(--radio); padding: 0.6rem 0.8rem; margin: 0.5rem 0; text-decoration: none; }
+.yape { display: grid; justify-items: center; gap: 0.5rem; text-align: center; }
+.cuenta { display: grid; gap: 0.75rem; }
+.cuenta .tarjeta-outfit span { color: var(--suave); }
+.borrar-cuenta { border: 1px solid var(--borde); border-radius: var(--radio); padding: 0.75rem; display: grid; gap: 0.5rem; }

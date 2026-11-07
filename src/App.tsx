@@ -3,9 +3,11 @@ import TabBar from './components/TabBar';
 import { Protegida, useSesion } from './lib/sesion';
 import Armario from './screens/Armario';
 import Bienvenida from './screens/Bienvenida';
+import Cuenta from './screens/Cuenta';
 import Entrar from './screens/Entrar';
 import Outfit from './screens/Outfit';
 import Plan from './screens/Plan';
+import Premium from './screens/Premium';
 import Prenda from './screens/Prenda';
 
 function Provisional({ titulo }: { titulo: string }) {
@@ -16,8 +18,8 @@ const PROTEGIDAS: [string, React.ReactNode][] = [
   ['/', <Armario />],
   ['/outfit', <Outfit />],
   ['/plan', <Plan />],
-  ['/cuenta', <Provisional titulo="Cuenta" />],
-  ['/premium', <Provisional titulo="Premium" />],
+  ['/cuenta', <Cuenta />],
+  ['/premium', <Premium />],
   ['/prenda/:id', <Prenda />],
   ['/bienvenida', <Bienvenida />],
   ['/admin', <Provisional titulo="Administrador" />],
