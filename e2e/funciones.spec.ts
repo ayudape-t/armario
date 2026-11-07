@@ -68,3 +68,16 @@ test.describe('sugerir-outfit', () => {
     expect(r.status).toBe(400);
   });
 });
+
+test.describe('borrar-cuenta', () => {
+  test('borra datos, fotos y usuario', async () => {
+    const u = await nuevoUsuario();
+    const ruta = await subirFoto(u);
+    await admin.from('prendas').insert({ usuario_id: u.id, foto_path: ruta, estado: 'sin_clasificar' });
+    const r = await llamar('borrar-cuenta', u.token, {});
+    expect(r.status).toBe(204);
+    expect((await admin.from('perfiles').select('id').eq('id', u.id)).data).toEqual([]);
+    expect((await admin.from('prendas').select('id').eq('usuario_id', u.id)).data).toEqual([]);
+    expect((await admin.storage.from('prendas').list(u.id)).data).toEqual([]);
+  });
+});
