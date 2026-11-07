@@ -13,7 +13,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "e2e": "playwright test --trace off",
-    "test:db": "supabase test db"
+    "test:db": "supabase test db",
+    "env:local": "node scripts/env-local.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.0",

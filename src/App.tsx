@@ -1,29 +1,37 @@
 import { Route, Routes, useLocation } from 'react-router';
 import TabBar from './components/TabBar';
+import { Protegida, useSesion } from './lib/sesion';
+import Entrar from './screens/Entrar';
 
 function Provisional({ titulo }: { titulo: string }) {
   return <h1>{titulo}</h1>;
 }
 
+const PROTEGIDAS: [string, string][] = [
+  ['/', 'Armario'],
+  ['/outfit', 'Outfit'],
+  ['/plan', 'Plan'],
+  ['/cuenta', 'Cuenta'],
+  ['/premium', 'Premium'],
+  ['/prenda/:id', 'Prenda'],
+  ['/bienvenida', 'Bienvenida'],
+  ['/admin', 'Administrador'],
+];
+
 export default function App() {
   const { pathname } = useLocation();
-  const conPestanas = pathname !== '/entrar';
+  const { usuario } = useSesion();
   return (
     <div className="app">
       <main className="contenido">
         <Routes>
-          <Route path="/" element={<Provisional titulo="Armario" />} />
-          <Route path="/outfit" element={<Provisional titulo="Outfit" />} />
-          <Route path="/plan" element={<Provisional titulo="Plan" />} />
-          <Route path="/cuenta" element={<Provisional titulo="Cuenta" />} />
-          <Route path="/premium" element={<Provisional titulo="Premium" />} />
-          <Route path="/prenda/:id" element={<Provisional titulo="Prenda" />} />
-          <Route path="/bienvenida" element={<Provisional titulo="Bienvenida" />} />
-          <Route path="/entrar" element={<Provisional titulo="Entrar" />} />
-          <Route path="/admin" element={<Provisional titulo="Administrador" />} />
+          <Route path="/entrar" element={<Entrar />} />
+          {PROTEGIDAS.map(([ruta, titulo]) => (
+            <Route key={ruta} path={ruta} element={<Protegida><Provisional titulo={titulo} /></Protegida>} />
+          ))}
         </Routes>
       </main>
-      {conPestanas && <TabBar />}
+      {usuario && pathname !== '/entrar' && <TabBar />}
     </div>
   );
 }

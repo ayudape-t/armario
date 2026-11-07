@@ -435,3 +435,11 @@ import_map = "./functions/deno.json"
 
 [functions.borrar-cuenta]
 import_map = "./functions/deno.json"
+
+[auth.email.template.magic_link]
+subject = "Tu código para entrar a Armario"
+content_path = "./supabase/templates/codigo.html"
+
+[auth.email.template.confirmation]
+subject = "Tu código para entrar a Armario"
+content_path = "./supabase/templates/codigo.html"
