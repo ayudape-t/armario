@@ -1,0 +1,38 @@
+:root {
+  --fondo: #f6efe9;
+  --superficie: #ffffff;
+  --texto: #2b211c;
+  --suave: #75665d;
+  --marca: #7a4e3a;
+  --marca-texto: #ffffff;
+  --borde: #e4d8cf;
+  --peligro: #b3261e;
+  --radio: 12px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); }
+a { color: var(--marca); }
+button, input, select, textarea { font: inherit; }
+button {
+  background: var(--marca);
+  color: var(--marca-texto);
+  border: 0;
+  border-radius: var(--radio);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.pagina { max-width: 720px; margin: 0 auto; padding: 1.5rem 1rem; }
+.app { min-height: 100dvh; display: flex; flex-direction: column; }
+.contenido { flex: 1; padding: 1rem; padding-bottom: 5rem; max-width: 720px; width: 100%; margin: 0 auto; }
+.tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--superficie); border-top: 1px solid var(--borde);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tabbar a { text-align: center; padding: 0.9rem 0.25rem; text-decoration: none; color: var(--suave); }
+.tabbar a.active { color: var(--marca); font-weight: 600; }
