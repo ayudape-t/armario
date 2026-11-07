@@ -4,6 +4,8 @@ import { Protegida, useSesion } from './lib/sesion';
 import Armario from './screens/Armario';
 import Bienvenida from './screens/Bienvenida';
 import Entrar from './screens/Entrar';
+import Outfit from './screens/Outfit';
+import Plan from './screens/Plan';
 import Prenda from './screens/Prenda';
 
 function Provisional({ titulo }: { titulo: string }) {
@@ -12,8 +14,8 @@ function Provisional({ titulo }: { titulo: string }) {
 
 const PROTEGIDAS: [string, React.ReactNode][] = [
   ['/', <Armario />],
-  ['/outfit', <Provisional titulo="Outfit" />],
-  ['/plan', <Provisional titulo="Plan" />],
+  ['/outfit', <Outfit />],
+  ['/plan', <Plan />],
   ['/cuenta', <Provisional titulo="Cuenta" />],
   ['/premium', <Provisional titulo="Premium" />],
   ['/prenda/:id', <Prenda />],

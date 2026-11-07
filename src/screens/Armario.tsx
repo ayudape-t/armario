@@ -4,6 +4,7 @@ import { CATEGORIAS, NOMBRE_CATEGORIA, type Categoria } from '../../supabase/fun
 import SubidaFotos from '../components/SubidaFotos';
 import { estadoLimites, type EstadoLimites } from '../lib/api';
 import { MENSAJE_SIN_CONEXION, sinConexion } from '../lib/conexion';
+import { hoyLima } from '../lib/fechas';
 import { rutaMini, urlsFirmadas } from '../lib/fotos';
 import { useSesion } from '../lib/sesion';
 import { supabase } from '../lib/supabase';
@@ -19,6 +20,7 @@ export default function Armario() {
   const [limites, setLimites] = useState<EstadoLimites | null>(null);
   const [filtro, setFiltro] = useState<Filtro>('todo');
   const [error, setError] = useState('');
+  const [hoy, setHoy] = useState<string | null>(null);
 
   const cargar = useCallback(async () => {
     try {
@@ -29,6 +31,8 @@ export default function Armario() {
       if (error) throw error;
       setPrendas(data as PrendaFila[]);
       setLimites(await estadoLimites());
+      const { data: plan } = await supabase.from('agenda').select('outfits(titulo)').eq('fecha', hoyLima()).maybeSingle();
+      setHoy((plan?.outfits as unknown as { titulo: string } | null)?.titulo ?? null);
       setFotos(await urlsFirmadas(data.map((p) => rutaMini(p.foto_path))).catch(() => ({})));
       setError('');
     } catch (e) {
@@ -55,6 +59,8 @@ export default function Armario() {
         <h1>Mi armario</h1>
         {!limites.premium && <span className="contador">{limites.prendas} de {limites.max_prendas}</span>}
       </header>
+
+      {hoy && <Link className="hoy" to="/plan">Hoy: {hoy}</Link>}
 
       <SubidaFotos uid={usuario!.id} onCambio={cargar} />
 
