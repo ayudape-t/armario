@@ -37,3 +37,12 @@ test('pedir, guardar y planificar outfits', async ({ page }) => {
   await page.getByRole('link', { name: 'Armario' }).click();
   await expect(page.getByText('Hoy: Toque dorado')).toBeVisible();
 });
+
+test('con una sola prenda avisa que faltan prendas', async ({ page }) => {
+  const uid = await idDe(await entrarConCorreo(page));
+  await admin.from('prendas').insert({ usuario_id: uid, foto_path: `${uid}/sola.webp`, estado: 'lista', categoria: 'vestido' });
+  await page.goto('/app/outfit');
+  await page.getByRole('combobox', { name: 'Ocasión' }).selectOption({ label: 'Casual' });
+  await page.getByRole('button', { name: 'Sugerir outfits' }).click();
+  await expect(page.getByText('Agrega prendas para armar outfits')).toBeVisible();
+});

@@ -6,6 +6,8 @@ export type RespuestaFuncion<T> = { ok: true; data: T } | { ok: false; error: st
 
 export async function llamarFuncion<T>(nombre: Funcion, body?: unknown): Promise<RespuestaFuncion<T>> {
   const { data, error } = await supabase.functions.invoke(nombre, { body: body ?? {} });
+  // sugerir-outfit responde 200 con { error } para avisos que no son fallas (sin_prendas, fuera_de_tema).
+  if (!error && typeof data?.error === 'string') return { ok: false, error: data.error, status: 200 };
   if (!error) return { ok: true, data: data as T };
   if (error instanceof FunctionsHttpError) {
     const respuesta = error.context as Response;

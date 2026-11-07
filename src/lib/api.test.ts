@@ -31,3 +31,8 @@ test('sinConexion reconoce errores de red', () => {
   expect(sinConexion(new TypeError('Failed to fetch'))).toBe(true);
   expect(sinConexion(new Error('otra cosa'))).toBe(false);
 });
+
+test('llamarFuncion trata un 200 con error como respuesta no exitosa', async () => {
+  invoke.mockResolvedValueOnce({ data: { error: 'sin_prendas' }, error: null, response: undefined } as never);
+  expect(await llamarFuncion('sugerir-outfit', {})).toEqual({ ok: false, error: 'sin_prendas', status: 200 });
+});
