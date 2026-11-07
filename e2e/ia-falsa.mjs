@@ -2,6 +2,12 @@
 import { createServer } from 'node:http';
 
 const puerto = Number(process.argv[2] ?? 8787);
+const TITULOS = ['Noche con brillo', 'Abrigada y cómoda', 'Toque dorado'];
+const FRASES = [
+  'El negro con un detalle de color resalta de noche.',
+  'Una capa abrigadora te cubre del frío sin perder estilo.',
+  'Un accesorio llamativo levanta un look sencillo.',
+];
 
 function respuesta(body) {
   const contenido = body.messages.flatMap((m) => (Array.isArray(m.content) ? m.content : [{ type: 'text', text: m.content }]));
@@ -15,7 +21,7 @@ function respuesta(body) {
   return {
     fuera_de_tema: false,
     faltan: null,
-    outfits: [0, 1, 2].map((i) => ({ titulo: `Outfit ${i + 1}`, frase: 'Combinación de prueba', prendas: par(i) })),
+    outfits: [0, 1, 2].map((i) => ({ titulo: TITULOS[i], frase: FRASES[i], prendas: par(i) })),
   };
 }
 

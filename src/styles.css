@@ -90,3 +90,17 @@ form { display: grid; gap: 0.75rem; }
 table { border-collapse: collapse; width: 100%; background: var(--superficie); border-radius: var(--radio); }
 th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--borde); white-space: nowrap; }
 input[type='number'] { padding: 0.7rem 0.8rem; border: 1px solid var(--borde); border-radius: var(--radio); }
+.portada-cabecera, .portada-pie { display: flex; justify-content: space-between; align-items: center; }
+.portada-pie { justify-content: center; gap: 0.5rem; color: var(--suave); }
+.portada { display: grid; gap: 2.5rem; }
+.portada-hero { display: grid; gap: 1rem; justify-items: start; }
+.portada-hero h1 { font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.15; margin: 0; }
+.nota { color: var(--suave); font-size: 0.9rem; margin: 0; }
+.portada-bloques { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.portada-bloques img { width: 100%; height: auto; border-radius: var(--radio); border: 1px solid var(--borde); }
+.portada-bloques h2 { font-size: 1.15rem; margin: 0.6rem 0 0.3rem; }
+.portada-bloques p { margin: 0; }
+.planes { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 1rem; }
+.planes article { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 1rem; }
+.legal { line-height: 1.55; }
+.borrador { background: #fff6e5; border-radius: var(--radio); padding: 0.5rem 0.75rem; }

@@ -31,8 +31,8 @@ test('pedir, guardar y planificar outfits', async ({ page }) => {
   await expect(sugeridos.nth(2).getByText(/Planificado/)).toBeVisible();
 
   await page.getByRole('link', { name: 'Plan' }).click();
-  await expect(page.getByRole('list', { name: 'Días' }).getByRole('listitem').filter({ hasText: 'Mañana' })).toContainText('Outfit 2');
+  await expect(page.getByRole('list', { name: 'Días' }).getByRole('listitem').filter({ hasText: 'Mañana' })).toContainText('Abrigada y cómoda');
 
   await page.getByRole('link', { name: 'Armario' }).click();
-  await expect(page.getByText('Hoy: Outfit 3')).toBeVisible();
+  await expect(page.getByText('Hoy: Toque dorado')).toBeVisible();
 });

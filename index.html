@@ -3,15 +3,68 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Armario</title>
+    <title>Armario — tu armario virtual y outfits a pedido</title>
+    <meta name="description" content="Toma una foto de cada prenda y la app la ordena sola. Pide outfits según la ocasión y el clima, y planifica tu semana. 7 días de Premium gratis." />
     <link rel="icon" href="/icono-192.png" />
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
-    <main class="pagina">
-      <h1>Armario</h1>
-      <p>Tu armario virtual. Página provisional.</p>
-      <p><a href="/app/entrar">Empezar gratis</a></p>
+    <header class="pagina portada-cabecera">
+      <strong>Armario</strong>
+      <a href="/app/entrar">Entrar</a>
+    </header>
+    <main class="pagina portada">
+      <section class="portada-hero">
+        <h1>Tu armario en el celular, y outfits cuando los pidas</h1>
+        <p>Toma una foto de cada prenda y la app la ordena sola. Pide un outfit para tu ocasión y el clima, y planifica tu semana.</p>
+        <a class="boton" href="/app/entrar">Empezar gratis</a>
+        <p class="nota">Al registrarte tienes 7 días de Premium gratis.</p>
+      </section>
+
+      <section class="portada-bloques">
+        <article>
+          <img src="/capturas/armario.jpg" alt="El armario ordenado por categorías" width="390" height="844" loading="lazy" />
+          <h2>Una foto y listo</h2>
+          <p>La app reconoce si es un polo, un jean o unos botines, y su color. Tú solo confirmas.</p>
+        </article>
+        <article>
+          <img src="/capturas/outfit.jpg" alt="Tres outfits sugeridos para una fiesta de noche" width="390" height="844" loading="lazy" />
+          <h2>Outfits a pedido</h2>
+          <p>Dile la ocasión, el tema, si es formal o informal, los colores y el clima. Te propone 3 outfits con tu propia ropa.</p>
+        </article>
+        <article>
+          <img src="/capturas/plan.jpg" alt="La semana con un outfit para cada día" width="390" height="844" loading="lazy" />
+          <h2>Tu semana planificada</h2>
+          <p>Guarda los outfits que te gustan y ponlos en tu agenda. Cada mañana sabes qué ponerte.</p>
+        </article>
+      </section>
+
+      <section class="portada-precios">
+        <h2>Precios</h2>
+        <div class="planes">
+          <article>
+            <h3>Gratis</h3>
+            <ul>
+              <li>Hasta 50 prendas</li>
+              <li>3 outfits al día</li>
+              <li>Agenda y outfits guardados</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Premium</h3>
+            <ul>
+              <li>Prendas sin límite</li>
+              <li>Outfits sin límite</li>
+            </ul>
+            <p><strong>S/9.90</strong> 1 mes · <strong>S/24.90</strong> 3 meses · <strong>S/79.90</strong> 12 meses</p>
+            <p class="nota">Pagas con Yape. Sin renovaciones automáticas.</p>
+          </article>
+        </div>
+        <a class="boton" href="/app/entrar">Empezar gratis</a>
+      </section>
     </main>
+    <footer class="pagina portada-pie">
+      <a href="/terminos">Términos</a> · <a href="/privacidad">Privacidad</a>
+    </footer>
   </body>
 </html>
