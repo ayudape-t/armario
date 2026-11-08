@@ -11,6 +11,8 @@ Guía para publicar Armario por primera vez. Ninguna contraseña ni clave va al 
 
 ## 1. Supabase (base de datos, fotos y funciones)
 
+> **Hecho el 08/11/2026:** proyecto `armario` (ref `wmuavihjzkiqiytmfopf`, São Paulo, plan gratis) con las 7 migraciones y las 3 funciones. No se creó `armario-pruebas`: el plan gratis permite 2 proyectos y el otro es `mascotas-nfc`; las pruebas corren en local y en GitHub.
+
 1. Crea dos proyectos en el plan **Free**, región **South America (São Paulo)**:
    - `armario` (el real);
    - `armario-pruebas` (para probar sin tocar datos de clientes).
